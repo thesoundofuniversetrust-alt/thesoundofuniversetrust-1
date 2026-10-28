@@ -1,0 +1,52 @@
+[
+  {
+    "id": "food-drive",
+    "title": "Food Packet Distribution Drive",
+    "description": "Our volunteers prepared hygienic food packets and handed them to families in need across Ranipet.",
+    "status": "done",
+    "location": "Ranipet",
+    "cover": "assets/img/food_distrubution.png",
+    "link": "#gallery",
+    "linkLabel": "View photos"
+  },
+  {
+    "id": "drawing-comp",
+    "title": "Drawing Competition",
+    "description": "A free drawing competition for children aged 3 to 18, in four age groups.",
+    "status": "upcoming",
+    "location": "Ranipet",
+    "cover": "assets/img/Drawing_competition_banner.png",
+    "link": "drawing-registration.html",
+    "linkLabel": "Register now"
+  },
+  {
+    "id": "medical-camp",
+    "title": "Free Medical & Health Camp",
+    "description": "Free health check-ups and awareness sessions with local doctors for villages around Ranipet.",
+    "status": "upcoming",
+    "location": "Ranipet villages",
+    "cover": "assets/img/medical_camp.png",
+    "link": "#donate",
+    "linkLabel": "Support this"
+  },
+  {
+    "id": "letter-writing",
+    "title": "Letter Writing Competition",
+    "description": "A free letter writing competition for students — a chance to share their thoughts, gratitude and dreams.",
+    "status": "upcoming",
+    "location": "Ranipet",
+    "cover": "assets/img/letter_writing.png",
+    "link": "#donate",
+    "linkLabel": "Support this"
+  },
+  {
+    "id": "poetry-writing",
+    "title": "Poetry Writing Competition",
+    "description": "A free poetry writing competition that gives young writers a stage to express their creativity.",
+    "status": "upcoming",
+    "location": "Ranipet",
+    "cover": "assets/img/poetry_writing.png",
+    "link": "#donate",
+    "linkLabel": "Support this"
+  }
+]

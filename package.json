@@ -1,0 +1,12 @@
+{
+  "name": "tsu-website",
+  "version": "1.0.0",
+  "description": "The Sound of Universe Trust website",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

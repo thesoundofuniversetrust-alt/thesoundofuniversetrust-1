@@ -478,4 +478,248 @@
   var saved = store.get('tsu-lang');
   applyLang(saved);
   updateAmount();
+
+  /* ------------------------------------------------------------------
+     Load activity data from API → update icons + photos on public site
+     ------------------------------------------------------------------ */
+  (function loadActivitiesFromAPI() {
+    fetch('/api/content?type=activities')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (res) {
+        if (!res || !res.data) return;
+        var apiData = res.data;
+
+        apiData.forEach(function (act) {
+          var key = act.key || act.id;
+
+          // 1. Swap icon image if one is uploaded via admin
+          if (act.iconImage) {
+            var icEl = document.getElementById('act-ic-' + key);
+            if (icEl) {
+              var img = document.createElement('img');
+              img.src     = act.iconImage;
+              img.alt     = act.title || '';
+              img.loading = 'lazy';
+              icEl.innerHTML = '';
+              icEl.appendChild(img);
+            }
+          }
+
+          // 2. Merge API photos into CFG so "View photos" always uses latest
+          if (act.photos && act.photos.length) {
+            if (!CFG.activityPhotos) CFG.activityPhotos = {};
+            CFG.activityPhotos[key] = act.photos;
+          }
+        });
+
+        // Re-bind "View photos" buttons with updated photo data
+        var actPhotos = CFG.activityPhotos || {};
+        $$('.act[data-act]').forEach(function (card) {
+          var photos = actPhotos[card.dataset.act] || [];
+          var btn    = $('.act__more', card);
+          if (!btn) return;
+          // Clone to remove old listener
+          var newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+          if (!photos.length) { newBtn.hidden = true; return; }
+          newBtn.hidden = false;
+          newBtn.addEventListener('click', function () {
+            var av     = $('#actview');
+            var avGrid = $('#actview-grid');
+            if (!av || !avGrid) return;
+            var title = $('h3', card).textContent;
+            $('#actview-title').textContent = title;
+            $('#actview-desc').textContent  = $('p', card).textContent;
+            avGrid.innerHTML = '';
+            photos.forEach(function (src, i) {
+              var img     = document.createElement('img');
+              img.src     = src;
+              img.alt     = title + ' – ' + (i + 1);
+              img.loading = 'lazy';
+              avGrid.appendChild(img);
+            });
+            if (typeof av.showModal === 'function') av.showModal();
+            else av.setAttribute('open', '');
+          });
+        });
+      })
+      .catch(function () { /* silently fall back to config.js */ });
+  })();
+
+  /* ==================================================================
+     OWNER LOGIN  (3-dot menu  →  modal  →  email+pw  →  OTP  →  admin)
+     ================================================================== */
+  (function ownerLogin() {
+    var SESSION_KEY = 'tsu-session';
+
+    /* ---- 3-dot menu toggle ---- */
+    var menuBtn      = $('#owner-menu-btn');
+    var dropdown     = $('#owner-dropdown');
+    var loginTrigger = $('#owner-login-trigger');
+
+    if (!menuBtn || !dropdown) return; // guard
+
+    function openDropdown() {
+      dropdown.hidden = false;
+      menuBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeDropdown() {
+      dropdown.hidden = true;
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dropdown.hidden ? openDropdown() : closeDropdown();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#owner-menu')) closeDropdown();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDropdown();
+    });
+
+    /* ---- Open login modal ---- */
+    var modal      = $('#owner-modal');
+    var modalClose = $('#owner-modal-close');
+
+    if (!modal) return;
+
+    loginTrigger && loginTrigger.addEventListener('click', function () {
+      closeDropdown();
+      clearLoginForm();
+      showStep(1);
+      if (typeof modal.showModal === 'function') modal.showModal();
+      else modal.setAttribute('open', '');
+    });
+
+    modalClose && modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.open) closeModal();
+    });
+
+    function closeModal() {
+      if (modal.close) modal.close(); else modal.removeAttribute('open');
+    }
+    function showStep(n) {
+      $('#owner-step-1').hidden = (n !== 1);
+      $('#owner-step-2').hidden = (n !== 2);
+    }
+    function clearLoginForm() {
+      var f1 = $('#owner-login-form'), f2 = $('#owner-otp-form');
+      if (f1) f1.reset();
+      if (f2) f2.reset();
+      ['e-owner-email','e-owner-password','e-owner-login','e-owner-otp','e-owner-otp-global']
+        .forEach(function (id) { var el = document.getElementById(id); if (el) el.textContent = ''; });
+    }
+
+    /* ---- Step 1: email + password ---- */
+    var loginForm = $('#owner-login-form');
+    var otpToken  = '';  // opaque token from server
+
+    loginForm && loginForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var email    = $('#owner-email').value.trim();
+      var password = $('#owner-password').value;
+      var errEl    = $('#e-owner-login');
+      var btn      = $('#owner-login-btn');
+
+      // Client-side validation
+      var ok = true;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('e-owner-email').textContent = 'Enter a valid email';
+        ok = false;
+      } else { document.getElementById('e-owner-email').textContent = ''; }
+
+      if (!password) {
+        document.getElementById('e-owner-password').textContent = 'Password is required';
+        ok = false;
+      } else { document.getElementById('e-owner-password').textContent = ''; }
+
+      if (!ok) return;
+
+      btn.disabled    = true;
+      btn.textContent = 'Verifying…';
+      errEl.textContent = '';
+
+      try {
+        var res = await fetch('/api/auth', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password }),
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+
+        otpToken = data.token;
+        var hint = $('#owner-otp-hint');
+        if (hint) hint.textContent = 'We\'ve sent a 6-digit code to ' + (data.maskedEmail || email);
+        showStep(2);
+        var otpInput = $('#owner-otp');
+        if (otpInput) setTimeout(function () { otpInput.focus(); }, 80);
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Continue';
+      }
+    });
+
+    /* ---- Step 2: OTP ---- */
+    var otpForm = $('#owner-otp-form');
+    var otpBack = $('#owner-otp-back');
+
+    otpBack && otpBack.addEventListener('click', function () { showStep(1); });
+
+    otpForm && otpForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var otp    = ($('#owner-otp').value || '').replace(/\s/g, '');
+      var errEl  = $('#e-owner-otp-global');
+      var btn    = $('#owner-otp-btn');
+
+      if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+        document.getElementById('e-owner-otp').textContent = 'Enter the 6-digit code';
+        return;
+      }
+      document.getElementById('e-owner-otp').textContent = '';
+      errEl.textContent = '';
+
+      btn.disabled    = true;
+      btn.textContent = 'Verifying…';
+
+      try {
+        var res = await fetch('/api/verify-otp', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ token: otpToken, otp: otp }),
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'OTP verification failed');
+
+        // Store session and redirect
+        sessionStorage.setItem(SESSION_KEY, data.sessionToken);
+        closeModal();
+        location.href = 'admin.html';
+      } catch (err) {
+        errEl.textContent = err.message;
+        btn.disabled    = false;
+        btn.innerHTML   = '<svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> Verify &amp; Enter Dashboard';
+      }
+    });
+
+    /* ---- Password show/hide toggle ---- */
+    document.addEventListener('click', function (e) {
+      var toggle = e.target.closest('[data-pw-toggle]');
+      if (!toggle) return;
+      var input = document.getElementById(toggle.dataset.pwToggle);
+      if (!input) return;
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+  })();
+  /* ================================================================== end owner login */
+
 })();

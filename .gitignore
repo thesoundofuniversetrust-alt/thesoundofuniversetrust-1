@@ -1,0 +1,9 @@
+# Netlify local folder
+.netlify
+
+# Secrets — NEVER commit
+.env
+
+# Dependencies
+node_modules/
+package-lock.json

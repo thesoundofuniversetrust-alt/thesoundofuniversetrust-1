@@ -1,0 +1,62 @@
+[
+  {
+    "id": "education",
+    "key": "education",
+    "title": "Education & Scholarships",
+    "description": "Educational support and scholarships for poor and needy students.",
+    "color": "var(--purple)",
+    "iconImage": "",
+    "photos": [
+      "assets/img/Education_img/schl_event/1.jpeg","assets/img/Education_img/schl_event/2.jpeg",
+      "assets/img/Education_img/schl_event/3.jpeg","assets/img/Education_img/schl_event/4.jpeg",
+      "assets/img/Education_img/schl_event/5.jpeg","assets/img/Education_img/schl_event/6.jpeg",
+      "assets/img/Education_img/schl_event/7.jpeg","assets/img/Education_img/schl_event/8.jpeg",
+      "assets/img/Education_img/schl_event/9.jpeg","assets/img/Education_img/schl_event/10.jpeg",
+      "assets/img/Education_img/schl_event/11.jpeg","assets/img/Education_img/schl_event/12.jpeg",
+      "assets/img/Education_img/schl_event/13.jpeg","assets/img/Education_img/schl_event/14.jpeg",
+      "assets/img/Education_img/schl_event/15.jpeg","assets/img/Education_img/schl_event/16.jpeg",
+      "assets/img/Education_img/schl_event/17.jpeg","assets/img/Education_img/schl_event/18.jpeg",
+      "assets/img/Education_img/schl_event/19.jpeg","assets/img/Education_img/schl_event/20.jpeg",
+      "assets/img/Education_img/schl_event/21.jpeg","assets/img/Education_img/schl_event/22.jpeg",
+      "assets/img/Education_img/schl_event/23.jpeg","assets/img/Education_img/schl_event/24.jpeg",
+      "assets/img/Education_img/schl_event/25.jpeg","assets/img/Education_img/schl_event/26.jpeg",
+      "assets/img/Education_img/schl_event/27.jpeg","assets/img/Education_img/schl_event/28.jpeg",
+      "assets/img/Education_img/schl_event/29.jpeg","assets/img/Education_img/schl_event/30.jpeg",
+      "assets/img/Education_img/schl_event/31.jpeg","assets/img/Education_img/schl_event/32.jpeg",
+      "assets/img/Education_img/schl_event/33.jpeg","assets/img/Education_img/schl_event/34.jpeg",
+      "assets/img/Education_img/schl_event/35.jpeg","assets/img/Education_img/schl_event/36.jpeg",
+      "assets/img/Education_img/schl_event/37.jpeg","assets/img/Education_img/schl_event/38.jpeg",
+      "assets/img/Education_img/schl_event/39.jpeg","assets/img/Education_img/schl_event/40.jpeg",
+      "assets/img/Education_img/schl_event/41.jpeg","assets/img/Education_img/schl_event/42.jpeg",
+      "assets/img/Education_img/schl_event/43.jpeg","assets/img/Education_img/schl_event/44.jpeg",
+      "assets/img/Education_img/schl_event/45.jpeg","assets/img/Education_img/schl_event/46.jpeg",
+      "assets/img/Education_img/schl_event/47.jpeg","assets/img/Education_img/schl_event/48.jpeg",
+      "assets/img/Education_img/schl_event/49.jpeg","assets/img/Education_img/schl_event/50.jpeg",
+      "assets/img/Education_img/schl_event/51.jpeg"
+    ]
+  },
+  {
+    "id": "food", "key": "food",
+    "title": "Food, Clothing & Shelter",
+    "description": "Food, clothing, shelter and basic necessities for the underprivileged.",
+    "color": "var(--magenta)", "iconImage": "", "photos": []
+  },
+  {
+    "id": "medical", "key": "medical",
+    "title": "Medical Camps & Health",
+    "description": "Medical camps, health awareness programmes and humanitarian services.",
+    "color": "var(--sky)", "iconImage": "", "photos": []
+  },
+  {
+    "id": "environment", "key": "environment",
+    "title": "Environment & Tree Plantation",
+    "description": "Environmental protection, tree plantation and nature conservation.",
+    "color": "var(--green)", "iconImage": "", "photos": []
+  },
+  {
+    "id": "youth", "key": "youth",
+    "title": "Youth & Social Awareness",
+    "description": "Awareness programmes on education, health and social responsibility.",
+    "color": "var(--purple)", "iconImage": "", "photos": []
+  }
+]

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Owner Dashboard – The Sound of Universe Trust</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=1.7.1">
+  <link rel="stylesheet" href="assets/css/admin.css?v=1.0.0">
+</head>
+<body class="admin-body">
+
+<!-- ============ ADMIN NAVBAR ============ -->
+<header class="admin-nav">
+  <div class="admin-nav__inner">
+    <a class="admin-nav__brand" href="index.html">
+      <img src="assets/img/logo.png" alt="TSU Logo" width="40" height="40" style="border-radius:10px;object-fit:contain;background:#fff;padding:3px;">
+      <div>
+        <span class="admin-nav__name">TSU Dashboard</span>
+        <span class="admin-nav__sub">Owner Panel</span>
+      </div>
+    </a>
+    <div class="admin-nav__right">
+      <span class="admin-nav__user" id="admin-user-label">Owner</span>
+      <a href="index.html" class="btn btn--outline admin-nav__view">← View site</a>
+      <button type="button" class="btn admin-nav__logout" id="admin-logout">Logout</button>
+    </div>
+  </div>
+</header>
+
+<div class="admin-layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="admin-sidebar">
+    <nav class="admin-sidenav" aria-label="Dashboard">
+      <button type="button" class="admin-sidenav__item is-active" data-panel="activities">
+        <svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6"/><path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Activities
+      </button>
+      <button type="button" class="admin-sidenav__item" data-panel="services">
+        <svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 15 6 6"/></svg>
+        Services
+      </button>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="admin-main" id="admin-main">
+
+    <!-- ====== ACTIVITIES PANEL ====== -->
+    <section class="admin-panel is-active" id="panel-activities" aria-labelledby="panel-act-title">
+      <div class="admin-panel__head">
+        <div>
+          <h1 class="admin-panel__title" id="panel-act-title">Activities</h1>
+          <p class="admin-panel__sub">Add, edit or delete activity cards and their photo galleries.</p>
+        </div>
+        <button type="button" class="btn btn--primary" id="add-activity-btn">
+          <svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Activity
+        </button>
+      </div>
+
+      <div class="admin-cards" id="activities-list">
+        <div class="admin-loading" id="activities-loading">
+          <div class="spinner"></div>
+          <p>Loading activities…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== SERVICES PANEL ====== -->
+    <section class="admin-panel" id="panel-services" aria-labelledby="panel-svc-title">
+      <div class="admin-panel__head">
+        <div>
+          <h1 class="admin-panel__title" id="panel-svc-title">Services</h1>
+          <p class="admin-panel__sub">Manage service cards — add upcoming programmes, edit details or remove old ones.</p>
+        </div>
+        <button type="button" class="btn btn--primary" id="add-service-btn">
+          <svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Service
+        </button>
+      </div>
+
+      <div class="admin-cards" id="services-list">
+        <div class="admin-loading" id="services-loading">
+          <div class="spinner"></div>
+          <p>Loading services…</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ ACTIVITY EDITOR MODAL ============ -->
+<dialog class="admin-modal" id="activity-modal" aria-labelledby="activity-modal-title">
+  <div class="admin-modal__box">
+    <div class="admin-modal__head">
+      <h2 id="activity-modal-title">Add Activity</h2>
+      <button type="button" class="admin-modal__close" id="activity-modal-close" aria-label="Close">
+        <svg class="ic ic--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="activity-form" novalidate>
+      <input type="hidden" id="activity-id" name="id">
+
+      <div class="admin-form__row">
+        <div class="field">
+          <label for="activity-key">Activity Key <span class="req">*</span></label>
+          <input id="activity-key" name="key" type="text" required placeholder="e.g. education" autocomplete="off">
+          <p class="field__hint">Unique identifier (lowercase, no spaces). Used to link photos.</p>
+          <p class="field__err" id="e-activity-key" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="activity-color">Accent Color</label>
+          <select id="activity-color" name="color">
+            <option value="var(--purple)">Purple</option>
+            <option value="var(--magenta)">Magenta</option>
+            <option value="var(--sky)">Sky Blue</option>
+            <option value="var(--green)">Green</option>
+            <option value="var(--teal)">Teal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="activity-title">Title <span class="req">*</span></label>
+        <input id="activity-title" name="title" type="text" required placeholder="e.g. Education & Scholarships">
+        <p class="field__err" id="e-activity-title" aria-live="polite"></p>
+      </div>
+
+      <div class="field">
+        <label for="activity-desc">Description <span class="req">*</span></label>
+        <textarea id="activity-desc" name="description" rows="3" required placeholder="Short description of this activity…"></textarea>
+        <p class="field__err" id="e-activity-desc" aria-live="polite"></p>
+      </div>
+
+      <!-- Icon / Logo image -->
+      <div class="admin-photos admin-photos--icon">
+        <label class="admin-photos__label">
+          Activity Icon / Logo Image
+          <span style="font-weight:400;color:var(--text-muted);font-size:.8rem;margin-left:6px;">(shown on the card in user view instead of the default icon)</span>
+        </label>
+        <div class="admin-photos__icon-preview" id="activity-icon-preview"></div>
+        <label class="admin-photos__upload admin-photos__upload--icon" for="activity-icon-upload">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload icon / logo</span>
+          <small>JPG, PNG, WebP · Square image recommended</small>
+          <input id="activity-icon-upload" type="file" accept="image/*" hidden>
+        </label>
+        <div class="upload-progress" id="activity-icon-progress" hidden>
+          <div class="upload-progress__bar"><div class="upload-progress__fill" id="activity-icon-fill"></div></div>
+          <p id="activity-icon-status">Uploading…</p>
+        </div>
+      </div>
+
+      <!-- Photo management -->
+      <div class="admin-photos">
+        <label class="admin-photos__label">Photos</label>
+        <div class="admin-photos__grid" id="activity-photos-preview"></div>
+        <label class="admin-photos__upload" for="activity-photo-upload">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload photos</span>
+          <small>JPG, PNG, WebP · Multiple allowed</small>
+          <input id="activity-photo-upload" type="file" accept="image/*" multiple hidden>
+        </label>
+        <div class="upload-progress" id="activity-upload-progress" hidden>
+          <div class="upload-progress__bar"><div class="upload-progress__fill" id="activity-upload-fill"></div></div>
+          <p id="activity-upload-status">Uploading…</p>
+        </div>
+      </div>
+
+      <div class="admin-modal__footer">
+        <button type="button" class="btn btn--outline" id="activity-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="activity-save-btn">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          Save Activity
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- ============ SERVICE EDITOR MODAL ============ -->
+<dialog class="admin-modal" id="service-modal" aria-labelledby="service-modal-title">
+  <div class="admin-modal__box">
+    <div class="admin-modal__head">
+      <h2 id="service-modal-title">Add Service</h2>
+      <button type="button" class="admin-modal__close" id="service-modal-close" aria-label="Close">
+        <svg class="ic ic--lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="service-form" novalidate>
+      <input type="hidden" id="service-id" name="id">
+
+      <div class="admin-form__row">
+        <div class="field">
+          <label for="service-title">Title <span class="req">*</span></label>
+          <input id="service-title" name="title" type="text" required placeholder="e.g. Food Packet Distribution Drive">
+          <p class="field__err" id="e-service-title" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="service-status">Status</label>
+          <select id="service-status" name="status">
+            <option value="upcoming">Upcoming</option>
+            <option value="done">Completed</option>
+            <option value="ongoing">Ongoing</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="service-location">Location</label>
+        <input id="service-location" name="location" type="text" placeholder="e.g. Ranipet">
+      </div>
+
+      <div class="field">
+        <label for="service-desc">Description <span class="req">*</span></label>
+        <textarea id="service-desc" name="description" rows="3" required placeholder="Describe this service…"></textarea>
+        <p class="field__err" id="e-service-desc" aria-live="polite"></p>
+      </div>
+
+      <div class="field">
+        <label for="service-link">Action Link (optional)</label>
+        <input id="service-link" name="link" type="text" placeholder="#donate">
+        <p class="field__hint">Use #donate to link to donation page, #gallery for gallery, or a full URL.</p>
+      </div>
+      <div class="field">
+        <label for="service-link-label">Action Link Label</label>
+        <input id="service-link-label" name="linkLabel" type="text" placeholder="e.g. Register now">
+      </div>
+
+      <!-- Cover image -->
+      <div class="admin-photos">
+        <label class="admin-photos__label">Cover Image</label>
+        <div class="admin-photos__grid" id="service-photo-preview"></div>
+        <label class="admin-photos__upload" for="service-photo-upload">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload cover image</span>
+          <small>JPG, PNG, WebP</small>
+          <input id="service-photo-upload" type="file" accept="image/*" hidden>
+        </label>
+        <div class="upload-progress" id="service-upload-progress" hidden>
+          <div class="upload-progress__bar"><div class="upload-progress__fill" id="service-upload-fill"></div></div>
+          <p id="service-upload-status">Uploading…</p>
+        </div>
+      </div>
+
+      <div class="admin-modal__footer">
+        <button type="button" class="btn btn--outline" id="service-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="service-save-btn">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          Save Service
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- ============ CONFIRM DELETE DIALOG ============ -->
+<dialog class="admin-confirm" id="confirm-modal" aria-labelledby="confirm-title">
+  <div class="admin-confirm__box">
+    <div class="admin-confirm__icon">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h2 id="confirm-title">Delete this item?</h2>
+    <p id="confirm-msg">This action cannot be undone.</p>
+    <div class="admin-confirm__btns">
+      <button type="button" class="btn btn--outline" id="confirm-cancel">Cancel</button>
+      <button type="button" class="btn" id="confirm-ok" style="background:var(--danger);color:#fff;">Delete</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="admin-toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/admin.js?v=1.0.0"></script>
+</body>
+</html>
